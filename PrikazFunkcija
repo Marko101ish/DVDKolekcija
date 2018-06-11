@@ -1,9 +1,11 @@
 private void prikaz_Click(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
             konekcija.Open();
-            string query = "SELECT FILM.NAZIV,TIP_ULOGE.Tip, ULOGA.ImeLika " +
-                "FROM ZANR INNER JOIN(TIP_ULOGE INNER JOIN (Glumac INNER JOIN ((Producent INNER JOIN (FILM INNER JOIN Producirao ON FILM.FilmID = Producirao.FilmID) ON Producent.ProducentID = Producirao.ProducentID) INNER JOIN ULOGA ON FILM.FilmID = ULOGA.FilmID) ON Glumac.GlumacID = ULOGA.GlumacID) ON TIP_ULOGE.TipUlogeID = ULOGA.TipUlogeID) ON ZANR.ZanrID = FILM.ZanrID " +
-                "where ZANR.NazivZanra = @nz AND Glumac.Ime = @ime AND Glumac.Prezime = @prez";
+            string query = "SELECT FILM.NAZIV, ULOGA.ImeLika, TIP_ULOGE.Tip "+
+"FROM Glumac INNER JOIN (TIP_ULOGE INNER JOIN (ZANR INNER JOIN (FILM INNER JOIN ULOGA ON FILM.FilmID = ULOGA.FilmID) ON ZANR.ZanrID=FILM.ZanrID) ON TIP_ULOGE.TipUlogeID= ULOGA.TipUlogeID) ON ULOGA.GlumacID=Glumac.GlumacID "+
+"WHERE ZANR.NazivZanra=@nz AND Glumac.Ime=@ime AND Glumac.Prezime=@prez "+
+"ORDER BY FILM.Trajanje DESC;";
             komanda = new OleDbCommand(query, konekcija);
             komanda.Parameters.AddWithValue("@nz", comboBox1.Text);
             komanda.Parameters.AddWithValue("@ime", textBox1.Text);
